@@ -1,6 +1,8 @@
 const express = require("express");
 const { getAllProduct, createProduct, updateProduct, deleteProduct, getProductDetail } = require("../controllers/productController");
+const { isAuthenticatedUser } = require("../middleware/auth");
 const router = express.Router();
+const { authorizeRoles } = require("../middleware/auth");
 
 /**
  * @swagger
@@ -96,10 +98,10 @@ const router = express.Router();
  *         description: Product not found
  */
 
-router.route("/product/new").post(createProduct);
-router.route("/products").get(getAllProduct);
-router.route("/product/:id").get(getProductDetail);
-router.route("/product/:id").put(updateProduct);
-router.route("/product/:id").delete(deleteProduct);
+router.route("/product/new").post(isAuthenticatedUser, authorizeRoles("admin"), createProduct);
+router.route("/products").get(isAuthenticatedUser, getAllProduct);//its come from auth.js 
+router.route("/product/:id").get(isAuthenticatedUser, getProductDetail);
+router.route("/product/:id").put(isAuthenticatedUser, authorizeRoles("admin"), updateProduct);
+router.route("/product/:id").delete(isAuthenticatedUser, authorizeRoles("admin"), deleteProduct);
 
 module.exports = router;

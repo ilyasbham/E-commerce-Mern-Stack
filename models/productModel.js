@@ -62,6 +62,16 @@ const productSchema = mongoose.Schema({
             },
         }
     ],
+
+    //user who created the product
+    //bl user d product go create dr ll kyi dr
+    //p dok product controller mr dr htae -> req.body.user = req.user.id;
+    user:{
+        type:mongoose.Schema.ObjectId,
+        ref:"User",
+        required:true,
+    },
+
     createdAt:{
         type:Date,
         default:Date.now,

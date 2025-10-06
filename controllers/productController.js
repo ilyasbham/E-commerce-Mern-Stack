@@ -7,14 +7,21 @@ const ApiFeatures = require("../utils/apiFeatures");
 //Create product
 exports.createProduct = catchAsyncErrors(async (req,res,next)=>{
 
+    //value of req.user.id ka postman ka body ka lr ml aedr go save loke dr
+    req.body.user = req.user.id;
+
     const product = await Product.create(req.body);
 
 
     res.status(201).json({
         success:true,
         message:`Product ${product.name} created successfully`,
+        product
+
+
 
     })
+    next();
 });
 
 //Get All Product

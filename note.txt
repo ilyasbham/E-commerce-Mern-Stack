@@ -1,6 +1,8 @@
 Middleware error
 Controller → “Do work. If fail, throw error.”
 
+
+//utils->ErrorHandler
 ErrorHandler class → “Make errors smart (with message + code).”
 
 Error middleware → “Catch all errors and reply nicely.”
