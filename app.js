@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express();
 const MiddlewareError = require("./middleware/error")
-const swaggerDocs = require("./swagger");
+const swaggerDocs = require("./config/swagger");
 const cookieParser = require('cookie-parser');
 
 

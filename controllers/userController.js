@@ -3,6 +3,7 @@ const catchAsyncErrors=require("../middleware/catchAsyncErrors");
 const userModel=require("../models/userModel");
 const sendToken=require("../utils/jwtToken");
 const sendEmail=require("../utils/sendEmail.js");
+const crypto=require("crypto");
 
 //Register a user
 exports.registerUser=catchAsyncErrors(async(req,res,next)=>{
@@ -63,65 +64,7 @@ exports.logout=catchAsyncErrors(async(req,res,next)=>{
     });
 });
 
-/**
- * @swagger
- * /product:
- *   post:
- *     summary: Create a new product
- *    tags: [Product]
- *    requestBody:
- *     required: true
- *    content:
- *     application/json:
- *      schema:
- *      $ref: '#/components/schemas/Product'
- *   responses:
- *    201:
- *    description: Product created successfully
- *  get:
- *   summary: Get all products
- *  tags: [Product]
- *  responses:
- *  200:
- *   description: List of products
- * /product/{id}:
- * get:
- *  summary: Get product details by ID
- * tags: [Product]
- * parameters:
- * - in: path
- * name: id
- * required: true
- * schema:
- * type: string
- * description: Product ID
- * responses:
- * 200:
- *   description: Product details retrieved
- * 404:
- *   description: Product not found
- * put:
- * summary: Update product by ID
- * tags: [Product]
- * parameters:
- * - in: path
- * name: id
- * required: true
- * schema:
- * type: string
- * description: Product ID
- * requestBody:
- * required: true
- * content:
- * application/json:
- * schema:
- * $ref: '#/components/schemas/Product'
- * responses:
- * 200:
- * description: Product updated successfully
- * 404:
- * description: Product not found
- */
+
 //Delete Product
 exports.deleteProduct = catchAsyncErrors(async (req,res,next) =>{
     const { id } = req.params;
@@ -175,3 +118,186 @@ exports.forgotPassword=catchAsyncErrors(async(req,res,next)=>{
         return next(new ErrorHandler(error.message,500));
     }
 });
+
+
+//reset password
+//forget password loke lo gmail htl win lr dk token url go user ka click loke yin 
+// server ka aedr go pyn  hash loke p database htl ka hash token nk sit kyi dr
+//resetpassword
+exports.resetPassword=catchAsyncErrors(async(req,res,next)=>{
+  const resetPasswordToken=crypto
+  .createHash("sha256")
+  .update(req.params.token)
+  .digest("hex");
+    
+
+  //database htl ka hashed token and expire time nk sit kyi dr url ka ya lr dk plaintext go hashed loke p
+    const user = await userModel.findOne({
+        resetPasswordToken,
+        resetPasswordExpire: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        return next(new ErrorHandler("Invalid or expired reset token", 400));
+    }
+
+    if (req.body.password !== req.body.confirmPassword) {
+        return next(new ErrorHandler("Password does not match", 400));
+    }
+
+    //user yk new ps go save loke ml
+    user.password = req.body.password;
+    user.resetPasswordToken = undefined;//token go clear loke ml
+    user.resetPasswordExpire = undefined;//expire time go clear loke ml
+    await user.save();//user go save loke ml
+
+    sendToken(user, 200, res);
+});
+ 
+
+/**
+ * @swagger
+ * tags:
+ *   name: User
+ *   description: User authentication and account management
+ */
+
+/**
+ * @swagger
+ * /api/v1/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: John Doe
+ *               email:
+ *                 type: string
+ *                 example: johndoe@gmail.com
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *       400:
+ *         description: Missing or invalid input
+ */
+
+/**
+ * @swagger
+ * /api/v1/login:
+ *   post:
+ *     summary: Login an existing user
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: johndoe@gmail.com
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     responses:
+ *       200:
+ *         description: Login successful, returns JWT token
+ *       400:
+ *         description: Missing email or password
+ *       401:
+ *         description: Invalid credentials
+ */
+
+/**
+ * @swagger
+ * /api/v1/logout:
+ *   get:
+ *     summary: Logout current user
+ *     tags: [User]
+ *     responses:
+ *       200:
+ *         description: User logged out successfully
+ */
+
+/**
+ * @swagger
+ * /api/v1/password/forgot:
+ *   post:
+ *     summary: Send password reset link to user's email
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: johndoe@gmail.com
+ *     responses:
+ *       200:
+ *         description: Password reset email sent successfully
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Email sending failed
+ */
+
+/**
+ * @swagger
+ * /api/v1/password/reset/{token}:
+ *   put:
+ *     summary: Reset password using token sent to email
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Reset password token from email link
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - password
+ *               - confirmPassword
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 example: newpassword123
+ *               confirmPassword:
+ *                 type: string
+ *                 example: newpassword123
+ *     responses:
+ *       200:
+ *         description: Password reset successfully
+ *       400:
+ *         description: Invalid or expired token / Password mismatch
+ *       404:
+ *         description: User not found
+ */
