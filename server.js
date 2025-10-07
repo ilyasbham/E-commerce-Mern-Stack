@@ -1,34 +1,37 @@
-const app = require("./app");
-const dotenv = require("dotenv");
-const connectDatabase = require("./config/database");
-const swaggerDocs = require("./config/swagger"); // ✅ Import Swagger config
+const app = require("./app")
 
-// Handling uncaught exceptions
+const dotenv = require("dotenv")
+const connectDatabase = require("./config/database")
+
+//Handing uncaught exception
 process.on("uncaughtException", (err) => {
-  console.log(`❌ Error: ${err.message}`);
-  console.log("Shutting down the server due to uncaught exception");
-  process.exit(1);
+    console.log(`Error: ${err.message}`);
+    console.log("shutting down the server due to uncaught exception");
+    process.exit(1);
 });
 
-// Config
+
+//config
+
 dotenv.config({ path: "./config/config.env" });
 
-// Connect Database
-connectDatabase();
+//db connection
+connectDatabase()
 
-// Start server
-const server = app.listen(process.env.PORT, () => {
-  console.log(`✅ Server running on http://localhost:${process.env.PORT}`);
+const server = app.listen(process.env.PORT,()=> {
 
-  // ✅ Initialize Swagger docs once server starts
-  swaggerDocs(app);
-});
+    console.log(`server is working on http://localhost:${process.env.PORT}`)
 
-// Handling unhandled promise rejections (e.g., wrong DB URI)
+})
+
+
+//Unhandled Promise Rejection
+//example - mongoose connection error
+//example - wrong database url
 process.on("unhandledRejection", (err) => {
-  console.log(`❌ Error: ${err.message}`);
-  console.log("Shutting down the server due to unhandled promise rejection");
-  server.close(() => {
-    process.exit(1);
-  });
+    console.log(`Error: ${err.message}`);
+    console.log("shutting down the server due to unhandled promise rejection");
+    server.close(() => {
+        process.exit(1);
+    });
 });
