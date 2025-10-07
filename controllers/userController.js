@@ -92,7 +92,7 @@ exports.forgotPassword=catchAsyncErrors(async(req,res,next)=>{
         return next(new ErrorHandler("User not found",404));
     }
     //Get resetpassword token
-    const resetToken=user.getResetPasswordToken();
+    const resetToken=user.getResetPasswordT0oken();
     await user.save({validateBeforeSave:false});
     //create reset password url
     //req.protocol= http or https
@@ -153,7 +153,58 @@ exports.resetPassword=catchAsyncErrors(async(req,res,next)=>{
 
     sendToken(user, 200, res);
 });
- 
+
+//Get currently logged in User Details
+exports.getUserDetails=catchAsyncErrors(async(req,res,next)=>{
+    //req.user=logged in user ka id shi ml
+    const user=await userModel.findById(req.user.id);
+
+   if(!user){
+       return next(new ErrorHandler("User not found",404));
+   }
+
+   res.status(200).json({
+       success:true,
+       user
+   });
+});
+
+//update user password
+exports.updatePassword=catchAsyncErrors(async(req,res,next)=>{
+    const user=await userModel.findById(req.user.id).select("+password");
+    //check previous user password
+    //previous password go compare loke ml
+    //ps chg yin ayin sone ayin ps htae ya dl
+    const isMatched=await user.comparePassword(req.body.oldPassword);
+    if(!isMatched){
+        return next(new ErrorHandler("Old password is incorrect",400));
+    }
+
+    if(req.body.newPassword !== req.body.confirmPassword){
+        return next(new ErrorHandler("Password does not match",400));
+    }
+
+    user.password=req.body.newPassword;
+    await user.save();
+    sendToken(user,200,res);
+});
+
+//update user profile
+exports.updateProfile=catchAsyncErrors(async(req,res,next)=>{
+    const newUserData={
+        name:req.body.name,
+        email:req.body.email,
+    };
+    //we will add cloudinary later
+
+    const user=await userModel.findByIdAndUpdate(req.user.id,newUserData,{
+        new:true,
+        runValidators:true,
+        useFindAndModify:false,
+    });
+
+    sendToken(user,200,res);
+});
 
 /**
  * @swagger
