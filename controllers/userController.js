@@ -206,7 +206,7 @@ exports.updateProfile=catchAsyncErrors(async(req,res,next)=>{
     sendToken(user,200,res);
 });
 
-//Get all users(admin)
+//Get all users  --admin
 //admin ka user yk detail kyi mr
 exports.getAllUser = catchAsyncErrors(async(req,res,next)=> {
     const users = await userModel.find();
