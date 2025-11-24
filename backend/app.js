@@ -14,7 +14,7 @@ const cors = require("cors");
 // Allow requests from frontend
 app.use(
   cors({
-    origin: "https://e-commerce-86xu.onrender.com", // your deployed frontend URL
+    origin: ["http://localhost:5173","https://e-commerce-86xu.onrender.com"], // your deployed frontend URL
     credentials: true, // if you use cookies or authorization headers
   })
 );

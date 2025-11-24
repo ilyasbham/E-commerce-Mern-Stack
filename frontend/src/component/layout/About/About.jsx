@@ -1,12 +1,24 @@
 import React from "react";
 import "./aboutSection.css";
-import { Button, Typography, Avatar } from "@material-ui/core";
-import YouTubeIcon from "@material-ui/icons/YouTube";
-import InstagramIcon from "@material-ui/icons/Instagram";
+// Components
+import { Button, Typography, Avatar } from "@mui/material";
+
+// Icons
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import FacebookIcon from "@mui/icons-material/Facebook";
+
+
+
 const About = () => {
   const visitInstagram = () => {
-    window.location = "https://instagram.com/meabhisingh";
+    window.location = "https://www.instagram.com/zkkl994/";
   };
+
+  const visitFacebook = () => {
+    window.location = "https://www.facebook.com/buzz2day/";
+  };
+
   return (
     <div className="aboutSection">
       <div></div>
@@ -18,29 +30,46 @@ const About = () => {
           <div>
             <Avatar
               style={{ width: "10vmax", height: "10vmax", margin: "2vmax 0" }}
-              src="https://res.cloudinary.com/tripleayt/image/upload/v1631555947/products/jpyibarlaxawvcvqjv5b.png"
+              src="https://res.cloudinary.com/dt8zs3klr/image/upload/v1763915422/avatars/uaqe35hshjpn2o0ico54.jpg"
               alt="Founder"
             />
-            <Typography>Abhishek Singh</Typography>
+            <Typography>Ilyas Bham</Typography>
             <Button onClick={visitInstagram} color="primary">
               Visit Instagram
             </Button>
+            <Button onClick={visitFacebook} color="primary">
+              Visit Facebook
+            </Button>
             <span>
-              This is a sample wesbite made by @meabhisingh. Only with the
-              purpose to teach MERN Stack on the channel 6 Pack Programmer
+              This is a sample website made by @zkkl994. Only with the
+              purpose to teach MERN Stack and React concepts.
             </span>
           </div>
           <div className="aboutSectionContainer2">
             <Typography component="h2">Our Brands</Typography>
+
             <a
-              href="https://www.youtube.com/channel/UCO7afj9AUo0zV69pqEYhcjw"
-              target="blank"
+              href="https://www.youtube.com/@ilyasbham3377"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <YouTubeIcon className="youtubeSvgIcon" />
             </a>
 
-            <a href="https://instagram.com/meabhisingh" target="blank">
+            <a
+              href="https://www.instagram.com/zkkl994/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <InstagramIcon className="instagramSvgIcon" />
+            </a>
+
+            <a
+              href="https://www.facebook.com/buzz2day/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FacebookIcon className="facebookSvgIcon" />
             </a>
           </div>
         </div>
