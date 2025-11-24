@@ -6,9 +6,18 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const path = require('path');
+const cors = require("cors");
 
 
 
+
+// Allow requests from frontend
+app.use(
+  cors({
+    origin: "https://e-commerce-86xu.onrender.com", // your deployed frontend URL
+    credentials: true, // if you use cookies or authorization headers
+  })
+);
 
 
 //config
