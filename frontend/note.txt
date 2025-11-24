@@ -1,0 +1,10 @@
+ilyasbham1@gmail.com
+password
+
+
+Card Number	Card Type	Expiry	CVC
+4242 4242 4242 4242	Visa	Any future date	Any 3 digits
+4000 0566 5566 5556	Visa (auth only)	Any future date	Any 3 digits
+5555 5555 5555 4444	Mastercard	Any future date	Any 3 digits
+5200 8282 8282 8210	Mastercard (insufficient funds)	Any future date	Any 3 digits
+3782 822463 10005	American Express	Any future date	Any 4 digits
