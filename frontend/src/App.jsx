@@ -60,7 +60,7 @@ function App() {
 
 
   // Disable right-click context menu
-window.addEventListener('contextmenu', event => event.preventDefault());
+// window.addEventListener('contextmenu', event => event.preventDefault());
 
   return (
     <Router>
