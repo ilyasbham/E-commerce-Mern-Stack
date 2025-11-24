@@ -14,7 +14,7 @@ import SpellcheckIcon from "@material-ui/icons/Spellcheck";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import SideBar from "./Sidebar";
 import { NEW_PRODUCT_RESET } from "../../constants/productConstants";
-import "./NewProduct.css";
+import "./newProduct.css";
 
 const NewProduct = () => {
   const dispatch = useDispatch();
